@@ -34,8 +34,6 @@ SEQ=0
 </p>
 </details>
 
-<br>
-
 Of course, it works for way more things than just pings.
 
 ### Requires
@@ -59,6 +57,11 @@ Of course, it works for way more things than just pings.
 
 #### The script
 
+```
+git clone 'https://github.com/MahouShoujoMivutilde/iptables-notifier'
+cd iptables-notifier
+```
+
 Go to the end of the `handle()` function and change `noti-bot` for whatever you'll be using to deliver notifications.
 
 
@@ -75,6 +78,6 @@ sudo cp iptables-notifier.service /etc/systemd/system
 Don't forget to
 
 ```bash
-sudo systemctl daemon reload
+sudo systemctl daemon-reload
 sudo systemctl enable --now iptables-notifier.service
 ```
