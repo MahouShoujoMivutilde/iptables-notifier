@@ -1,5 +1,5 @@
 [Unit]
-Description=Iptables notifications in telegram
+Description=Iptables notifications on LOG events
 Wants=network-online.target nss-lookup.target iptables.service
 After=iptables.service
 

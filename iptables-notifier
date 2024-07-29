@@ -51,11 +51,12 @@ function handle() {
     # echo -e "$final"
 
     if command -v noti-bot >/dev/null; then
-        echo -e "$final" | noti-bot >dev/null
+        echo -e "$final" | noti-bot
     fi
 }
 
 
-journalctl -k --grep="IN=.*OUT=.*" --no-pager --follow -n 0 | while read -r line; do
-    handle "$line"
-done
+journalctl -k --grep="IN=.*OUT=.*" --no-pager --follow -n 0 |
+    while read -r line; do
+        handle "$line"
+    done
