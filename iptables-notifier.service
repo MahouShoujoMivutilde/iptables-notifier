@@ -1,0 +1,37 @@
+[Unit]
+Description=Iptables notifications in telegram
+Wants=network-online.target nss-lookup.target iptables.service
+After=iptables.service
+
+[Service]
+DynamicUser=yes
+# otherwise journal is inaccessible
+Group=systemd-journal
+
+ExecStart=/usr/local/bin/iptables-notifier
+
+LockPersonality=yes
+MemoryDenyWriteExecute=true
+NonBlocking=true
+NoNewPrivileges=true
+PrivateDevices=true
+ProtectControlGroups=yes
+ProtectHome=yes
+ProtectHostname=yes
+
+; ProtectKernelLogs=yes
+
+ProtectKernelModules=yes
+ProtectKernelTunables=yes
+ProtectSystem=strict
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX AF_NETLINK
+RestrictNamespaces=true
+RestrictRealtime=true
+SystemCallArchitectures=native
+SystemCallFilter=@system-service @chown
+SystemCallFilter=~@resources @privileged
+
+[Install]
+WantedBy=multi-user.target
+
+# vim: set ft=systemd:
