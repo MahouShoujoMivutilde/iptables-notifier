@@ -41,7 +41,7 @@ Of course, it works for way more things than just pings.
 * [dog](https://github.com/ogham/dog/) - for reverse dns lookup of SRC and DST addresses
 * Something that can send notifications - e.g. [apprise](https://github.com/caronc/apprise) (has everything) or you could lookup how use `curl` to send notification for a given service
 * systemd-journald - for iptables' events
-* awk, bash
+* awk, bash, sed
 
 ###  Setup
 
