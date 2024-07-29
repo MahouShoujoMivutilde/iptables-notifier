@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+# Send notifications on iptables events
+# depends on:
+#   dog
+#   storing kernel log in journald
+#   my noti-bot
+
+
+
+# no, makes it exit on dog's "no results"
+# set -e
+
+reverse_dns() {
+    local rev_addr="$(echo "$1" | awk -F '.' '{printf "%s.%s.%s.%s", $4, $3, $2, $1}')"
+    dog -1 --color never -q "${rev_addr}.in-addr.arpa" -t PTR --class=IN
+}
+
+# trim() {
+#     while read -r d; do
+#         local trimmed="$d"
+#         # Strip leading space.
+#         trimmed="${trimmed## }"
+#         # Strip trailing space.
+#         trimmed="${trimmed%% }"
+#         echo "$trimmed"e
+#     done
+# }
+
+function handle() {
+    event="$1"
+
+    msg="$(echo "$event" | awk -F 'IN=' '{print $1}')"
+    packet="IN=$(echo "$event" | awk -F 'IN=' '{print $2}' | tr ' ' '\n')"
+
+    # extract ip
+    SRC="$(echo -e "$packet" | grep -Po 'SRC=\K.+' )"
+    DST="$(echo -e "$packet" | grep -Po 'DST=\K.+' )"
+
+    src_domain="$(reverse_dns "$SRC")"
+    dst_domain="$(reverse_dns "$DST")"
+
+    if [[ "$src_domain" != "" ]]; then
+        packet="$(echo -e "$packet" | sed "s/${SRC}/${SRC} name: ${src_domain}/")"
+    fi
+    if [[ "$dst_domain" != "" ]]; then
+        packet="$(echo -e "$packet" | sed "s/${DST}/${DST} name: ${dst_domain}/")"
+    fi
+
+    final="${msg}\n${packet}"
+
+    # echo -e "$final"
+
+    if command -v noti-bot >/dev/null; then
+        echo "$final" | noti-bot
+    fi
+}
+
+while read -r line; do
+    handle "$line"
+done
